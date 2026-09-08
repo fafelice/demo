@@ -18,7 +18,7 @@
     --brick-dark:#7C321E;
     --ochre:#C6872F;
     --ochre-dark:#A66E24;
-    --navy:#1C2740;
+    --navy:#052139;
     --navy-soft:#2B3855;
     --line:#E4DAC8;
     --sage:#5F6E4F;
@@ -28,7 +28,7 @@
     --shadow:0 18px 40px -22px rgba(42,33,25,0.35);
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;scroll-padding-top:76px;}
   body{
     margin:0;
     font-family:'Source Sans 3', system-ui, sans-serif;
@@ -50,12 +50,22 @@
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
   :focus-visible{outline:3px solid var(--ochre);outline-offset:2px;}
 
-  /* ---------- HEADER ---------- */
+  /* ---------- HEADER ----------
+     Sempre trasparente e sovrapposto alla hero (position:fixed, non sposta il contenuto sotto).
+     Il fondo pieno/sfocato compare solo con la classe .scrolled, aggiunta via JS dopo un
+     piccolo scroll. Le voci di menu sono chiare finché è trasparente (sopra la foto),
+     scure quando compare lo sfondo chiaro. */
   header.site{
-    position:sticky;top:0;z-index:100;
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:transparent;
+    backdrop-filter:blur(0px);
+    border-bottom:1px solid transparent;
+    transition:background .3s ease, backdrop-filter .3s ease, border-color .3s ease;
+  }
+  header.site.scrolled{
     background:rgba(252,250,245,0.92);
     backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
+    border-bottom-color:var(--line);
   }
   .header-inner{
     max-width:var(--maxw);margin:0 auto;padding:14px 28px;
@@ -63,9 +73,13 @@
   }
   .brand{display:flex;align-items:center;gap:12px;}
   .brand svg{flex-shrink:0;}
+  .brand svg path, .brand svg circle{transition:stroke .3s ease;}
+  header.site:not(.scrolled) .brand svg path, header.site:not(.scrolled) .brand svg circle{stroke:#fff;}
   .brand-name{font-family:'Fraunces',serif;line-height:1.15;}
-  .brand-name strong{display:block;font-size:1.02rem;font-weight:600;color:var(--brick-dark);}
-  .brand-name span{display:block;font-size:0.78rem;color:var(--ink-soft);letter-spacing:0.02em;}
+  .brand-name strong{display:block;font-size:1.02rem;font-weight:600;color:var(--brick-dark);transition:color .3s ease;}
+  .brand-name span{display:block;font-size:0.78rem;color:var(--ink-soft);letter-spacing:0.02em;transition:color .3s ease;}
+  header.site:not(.scrolled) .brand-name strong{color:#fff;}
+  header.site:not(.scrolled) .brand-name span{color:rgba(255,255,255,0.75);}
 
   nav.primary{display:flex;align-items:center;gap:2px;}
   .navitem{position:relative;}
@@ -82,6 +96,9 @@
   .navitem>button:hover, .navitem>a:hover{color:var(--brick-dark);background:rgba(166,70,43,0.06);}
   .navitem button svg.chev{transition:transform .18s ease;}
   .navitem.open button svg.chev{transform:rotate(180deg);}
+  header.site:not(.scrolled) .navitem>button, header.site:not(.scrolled) .navitem>a{color:#fff;}
+  header.site:not(.scrolled) .navitem>a.active{color:#F0D6B8;}
+  header.site:not(.scrolled) .navitem>button:hover, header.site:not(.scrolled) .navitem>a:hover{color:#F0D6B8;background:rgba(255,255,255,0.12);}
   .dropdown{
     position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(-6px);
     min-width:220px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-m);
@@ -102,11 +119,17 @@
   .hamburger{
     display:none;background:none;border:1px solid var(--line);border-radius:var(--radius-s);
     width:42px;height:38px;align-items:center;justify-content:center;flex-shrink:0;
+    transition:border-color .3s ease;
   }
   .hamburger span, .hamburger span::before, .hamburger span::after{
     content:"";display:block;width:20px;height:2px;background:var(--ink);position:relative;
-    transition:transform .2s ease, opacity .2s ease;
+    transition:transform .2s ease, opacity .2s ease, background .3s ease;
   }
+  header.site:not(.scrolled) .hamburger{border-color:rgba(255,255,255,0.5);}
+  header.site:not(.scrolled) .hamburger span,
+  header.site:not(.scrolled) .hamburger span::before,
+  header.site:not(.scrolled) .hamburger span::after{background:#fff;}
+  header.site:not(.scrolled) .hamburger.active span{background:transparent;}
   .hamburger span::before{position:absolute;top:-6px;}
   .hamburger span::after{position:absolute;top:6px;}
   .hamburger.active span{background:transparent;}
@@ -194,7 +217,7 @@
   .slide-scrim{position:absolute;inset:0;background:linear-gradient(100deg, rgba(20,15,10,0.72) 0%, rgba(20,15,10,0.38) 45%, rgba(20,15,10,0.08) 70%);}
   .slide-content{position:relative;z-index:2;max-width:var(--maxw);width:100%;margin:0 auto;padding:0 28px;color:#fff;}
   .slide-content .kicker{font-size:0.85rem;letter-spacing:0.03em;color:#F0D6B8;font-weight:500;margin-bottom:14px;}
-  .slide-content h1{font-size:clamp(2.1rem,5vw,3.4rem);line-height:1.06;font-weight:600;max-width:11ch;}
+  .slide-content h1{font-size:clamp(2.1rem,5vw,3.4rem);line-height:1.06;font-weight:600;max-width:11ch;color:#fff;}
   .slide-content h1 em{font-style:italic;font-weight:400;color:#F0D6B8;}
   .slide-content .desc{margin-top:16px;font-size:1.08rem;line-height:1.5;max-width:38ch;color:rgba(255,255,255,0.88);}
   .hero-actions{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;}
@@ -223,14 +246,14 @@
   .carousel-wrap .hero-nav:hover{background:rgba(42,33,25,0.78);}
   .carousel-wrap .hero-prev{left:-21px;}
   .carousel-wrap .hero-next{right:-21px;}
-  @media (max-width:640px){
-    .carousel-wrap .hero-prev{left:4px;}
-    .carousel-wrap .hero-next{right:4px;}
-  }
 
   /* ---------- QUICK LINKS ---------- */
   /* margin-top calcolato via JS = -50% dell'altezza della barra, per sovrapporla a metà sulla hero */
   .quicklinks{position:relative;z-index:5;}
+  /* riempimento bianco SOLO nella parte sotto la hero (top impostato via JS);
+     la parte più in alto resta trasparente per mantenere l'effetto di sovrapposizione */
+  .ql-bg-fill{position:absolute;left:0;right:0;bottom:0;background:#fff;z-index:0;}
+  .quicklinks .wrap{position:relative;z-index:1;}
   .ql-carousel-wrap{max-width:var(--maxw);margin:0 auto;}
   /* il carousel (e le sue frecce) esiste solo sotto i 980px: da 980px in su i 6 link stanno tutti in riga */
   @media (min-width:980px){
@@ -376,6 +399,11 @@
     .foot-grid{grid-template-columns:1fr;gap:34px;}
     .slide-content h1{max-width:none;}
     .slide-content .desc{max-width:none;}
+    /* le frecce si stringono e si avvicinano al bordo: il testo lascia loro spazio dedicato, senza sovrapporsi mai */
+    .hero-nav{width:36px;height:36px;}
+    .hero-prev{left:6px;}
+    .hero-next{right:6px;}
+    .slide-content{padding:0 52px;}
     .nl-inner{flex-direction:column;align-items:stretch;}
     .nl-form{width:100%;}
     .nl-form input{flex:1;min-width:0;}
@@ -383,6 +411,25 @@
     .hero-actions a{justify-content:center;}
     .foot-bottom{flex-direction:column;text-align:center;}
     .slides{height:min(88vh,560px);}
+    /* su mobile il testo è centrato ed occupa quasi tutta la larghezza:
+       la sfumatura diagonale (pensata per il testo a sinistra su schermi larghi)
+       non basta più a scurire abbastanza lo sfondo. Overlay più scuro e uniforme. */
+    .slide-scrim{
+      background:linear-gradient(180deg, rgba(15,11,8,0.5) 0%, rgba(15,11,8,0.72) 45%, rgba(15,11,8,0.62) 100%);
+    }
+
+    /* frecce dei carousel (novità / quick links): mai sopra al contenuto. */
+    .carousel-wrap .hero-nav{width:36px;height:36px;}
+
+    /* novità: la card si restringe (padding sullo swiper), le frecce restano appena dentro il bordo */
+    .carousel-wrap .hero-prev{left:2px;}
+    .carousel-wrap .hero-next{right:2px;}
+    .novita-swiper{padding:6px 42px 10px;}
+
+    /* quick links (slider subito sotto la hero): box ridotto al 50% e frecce spostate FUORI dal box */
+    .ql-carousel-wrap{width:50%;margin:0 auto;}
+    .ql-carousel-wrap .hero-prev{left:-46px;}
+    .ql-carousel-wrap .hero-next{right:-46px;}
   }
 </style>
 </head>
@@ -590,6 +637,7 @@
 
 <!-- ============ QUICK LINKS ============ -->
 <div class="quicklinks">
+  <div class="ql-bg-fill"></div>
   <div class="wrap">
     <div class="ql-carousel-wrap carousel-wrap">
       <div class="swiper ql-swiper">
@@ -900,6 +948,14 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 (function(){
+  /* ---------- HEADER: sfondo pieno solo dopo un po' di scroll ---------- */
+  const siteHeader = document.querySelector('header.site');
+  function syncHeaderScrolled(){
+    siteHeader.classList.toggle('scrolled', window.scrollY > 40);
+  }
+  syncHeaderScrolled();
+  window.addEventListener('scroll', syncHeaderScrolled, { passive: true });
+
   /* ---------- DESKTOP DROPDOWNS ---------- */
   const navItems = document.querySelectorAll('#primaryNav .navitem[data-menu]');
   function closeAllDesktop(except){
@@ -989,11 +1045,17 @@
   });
 
   /* la barra dei quick link si sovrappone per metà della propria altezza sulla hero,
-     più altri 50px di risalita extra (uguali su desktop e mobile) */
+     più altri 10px di risalita extra (uguali su desktop e mobile).
+     Il riempimento bianco (.ql-bg-fill) parte esattamente dal bordo della hero,
+     così la parte che si sovrappone resta trasparente (si vede la hero) mentre
+     tutto ciò che sta sotto è bianco. */
   const quicklinksEl = document.querySelector('.quicklinks');
   const qlBar = qlWrap.querySelector('.ql-swiper');
+  const qlBgFill = document.querySelector('.ql-bg-fill');
   function syncQuicklinksOverlap(){
-    quicklinksEl.style.marginTop = (-(qlBar.offsetHeight / 2) - 10) + 'px';
+    const overlap = (qlBar.offsetHeight / 2) + 10;
+    quicklinksEl.style.marginTop = -overlap + 'px';
+    qlBgFill.style.top = overlap + 'px';
   }
   syncQuicklinksOverlap();
   window.addEventListener('resize', syncQuicklinksOverlap);
