@@ -276,14 +276,21 @@
   /* ---------- SECTION generic ---------- */
   section{padding:76px 0;}
   .section-head{margin-bottom:38px;}
-  .eyebrow-none{}
   .section-title{font-size:clamp(1.6rem,3vw,2.1rem);}
   .section-sub{margin-top:8px;color:var(--ink-soft);font-size:1rem;}
 
   /* ---------- ORARI MESSE ---------- */
   .orari-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:start;}
   .orari-list{border-top:1px solid var(--line);}
-  .orari-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 4px;border-bottom:1px solid var(--line);}
+  .orari-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px;border-bottom:1px solid var(--line);}
+  /* Tutti i div orari-row pari (2°, 4°, 6°, ecc.) avranno sfondo bianco */
+  .orari-row:nth-child(even) {
+    background-color: #ffffff;
+  }
+  /* Tutti i div orari-row dispari (1°, 3°, 5°, ecc.) avranno sfondo grigio chiaro */
+  .orari-row:nth-child(odd) {
+    background-color: #e6e5e5; /* Grigiocaro */
+  }
   .orari-day{display:flex;align-items:center;gap:12px;font-weight:600;}
   .orari-day svg{color:var(--brick);flex-shrink:0;}
   .orari-day small{display:block;font-weight:400;color:var(--ink-soft);font-size:0.8rem;}
