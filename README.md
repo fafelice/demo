@@ -2,7 +2,7 @@
 
 Sito web one-page per la Parrocchia di S. Bartolomeo a Formigine (MO). Landing page moderna che presenta la parrocchia, gli orari delle messe, le news, la vita comunitaria e i canali di contatto/donazione.
 
-**Demo:** apri [`demo.html`](./demo.html) in un browser, oppure servilo con un web server statico (vedi [Avvio locale](#avvio-locale)).
+**Demo:** apri [`index.html`](./index.html) in un browser, oppure servilo con un web server statico (vedi [Avvio locale](#avvio-locale)).
 
 ## Panoramica tecnica
 
