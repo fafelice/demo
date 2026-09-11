@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News ed Eventi — Parrocchia S. Bartolomeo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F6F1E7;
+    --paper:#FCFAF5;
+    --ink:#2A2119;
+    --ink-soft:#5B5044;
+    --brick:#A6462B;
+    --brick-dark:#7C321E;
+    --ochre:#C6872F;
+    --ochre-dark:#A66E24;
+    --navy:#052139;
+    --navy-soft:#2B3855;
+    --line:#E4DAC8;
+    --sage:#5F6E4F;
+    --radius-s:4px;
+    --radius-m:10px;
+    --maxw:1180px;
+    --shadow:0 18px 40px -22px rgba(42,33,25,0.35);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:76px;}
+  body{
+    margin:0;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    margin:0;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  p{margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;cursor:pointer;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+  :focus-visible{outline:3px solid var(--ochre);outline-offset:2px;}
+
+  /* ---------- HEADER ----------
+     Sempre trasparente e sovrapposto al banner di pagina (position:fixed, non sposta il
+     contenuto sotto). Il fondo pieno/sfocato compare solo con la classe .scrolled. */
+  header.site{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:transparent;
+    backdrop-filter:blur(0px);
+    border-bottom:1px solid transparent;
+    transition:background .3s ease, backdrop-filter .3s ease, border-color .3s ease;
+  }
+  header.site.scrolled{
+    background:rgba(252,250,245,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom-color:var(--line);
+  }
+  .header-inner{
+    max-width:var(--maxw);margin:0 auto;padding:14px 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand svg{flex-shrink:0;}
+  .brand svg path, .brand svg circle{transition:stroke .3s ease;}
+  header.site:not(.scrolled) .brand svg path, header.site:not(.scrolled) .brand svg circle{stroke:#fff;}
+  .brand-name{font-family:'Fraunces',serif;line-height:1.15;}
+  .brand-name strong{display:block;font-size:1.02rem;font-weight:600;color:var(--brick-dark);transition:color .3s ease;}
+  .brand-name span{display:block;font-size:0.78rem;color:var(--ink-soft);letter-spacing:0.02em;transition:color .3s ease;}
+  header.site:not(.scrolled) .brand-name strong{color:#fff;}
+  header.site:not(.scrolled) .brand-name span{color:rgba(255,255,255,0.75);}
+
+  nav.primary{display:flex;align-items:center;gap:2px;}
+  .navitem{position:relative;}
+  .navitem>button, .navitem>a{
+    display:flex;align-items:center;gap:5px;
+    background:none;border:none;color:var(--ink);
+    font-size:0.96rem;font-weight:500;padding:10px 12px;border-radius:var(--radius-s);
+    transition:color .15s ease, background .15s ease;
+  }
+  .navitem>a.active{color:var(--brick-dark);}
+  .navitem>a.active::after{
+    content:"";display:block;position:absolute;left:12px;right:12px;bottom:2px;height:2px;background:var(--ochre);
+  }
+  .navitem>button:hover, .navitem>a:hover{color:var(--brick-dark);background:rgba(166,70,43,0.06);}
+  .navitem button svg.chev{transition:transform .18s ease;}
+  .navitem.open button svg.chev{transform:rotate(180deg);}
+  header.site:not(.scrolled) .navitem>button, header.site:not(.scrolled) .navitem>a{color:#fff;}
+  header.site:not(.scrolled) .navitem>a.active{color:#F0D6B8;}
+  header.site:not(.scrolled) .navitem>button:hover, header.site:not(.scrolled) .navitem>a:hover{color:#F0D6B8;background:rgba(255,255,255,0.12);}
+  .dropdown{
+    position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(-6px);
+    min-width:220px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-m);
+    box-shadow:var(--shadow);padding:8px;
+    opacity:0;visibility:hidden;transition:opacity .16s ease, transform .16s ease;
+  }
+  .navitem.open .dropdown{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  .dropdown a{display:block;padding:9px 12px;border-radius:var(--radius-s);font-size:0.92rem;color:var(--ink-soft);}
+  .dropdown a:hover{background:rgba(166,70,43,0.07);color:var(--brick-dark);}
+
+  .cta-donate{
+    background:var(--ochre);color:#fff;padding:10px 20px;border-radius:999px;
+    font-weight:600;font-size:0.92rem;white-space:nowrap;border:none;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .cta-donate:hover{background:var(--ochre-dark);transform:translateY(-1px);}
+
+  .hamburger{
+    display:none;background:none;border:1px solid var(--line);border-radius:var(--radius-s);
+    width:42px;height:38px;align-items:center;justify-content:center;flex-shrink:0;
+    transition:border-color .3s ease;
+  }
+  .hamburger span, .hamburger span::before, .hamburger span::after{
+    content:"";display:block;width:20px;height:2px;background:var(--ink);position:relative;
+    transition:transform .2s ease, opacity .2s ease, background .3s ease;
+  }
+  header.site:not(.scrolled) .hamburger{border-color:rgba(255,255,255,0.5);}
+  header.site:not(.scrolled) .hamburger span,
+  header.site:not(.scrolled) .hamburger span::before,
+  header.site:not(.scrolled) .hamburger span::after{background:#fff;}
+  header.site:not(.scrolled) .hamburger.active span{background:transparent;}
+  .hamburger span::before{position:absolute;top:-6px;}
+  .hamburger span::after{position:absolute;top:6px;}
+  .hamburger.active span{background:transparent;}
+  .hamburger.active span::before{top:0;transform:rotate(45deg);}
+  .hamburger.active span::after{top:0;transform:rotate(-45deg);}
+
+  /* ---------- MOBILE PANEL: full-screen, slide da destra ---------- */
+  .mobile-panel{
+    position:fixed;inset:0;z-index:200;
+    background:
+      radial-gradient(circle at 88% 8%, rgba(198,135,47,0.22) 0%, transparent 45%),
+      linear-gradient(165deg, var(--navy) 0%, #141d30 100%);
+    display:flex;flex-direction:column;
+    transform:translateX(100%);
+    visibility:hidden;
+    transition:transform .6s cubic-bezier(.16,1,.3,1), visibility 0s linear .6s;
+  }
+  .mobile-panel.show{
+    transform:translateX(0);
+    visibility:visible;
+    transition:transform .6s cubic-bezier(.16,1,.3,1), visibility 0s linear 0s;
+  }
+  .mp-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 22px;flex-shrink:0;
+  }
+  .mp-header .brand-name strong{color:#fff;}
+  .mp-header .brand-name span{color:rgba(255,255,255,0.6);}
+  .mp-header .brand svg path, .mp-header .brand svg circle{stroke:#E9B27E;}
+  .mp-close{
+    width:44px;height:44px;border-radius:50%;flex-shrink:0;
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    transition:background .2s ease, transform .35s cubic-bezier(.16,1,.3,1);
+  }
+  .mp-close:hover{background:rgba(255,255,255,0.18);}
+  .mobile-panel.show .mp-close{transform:rotate(0deg);}
+  .mp-close:active{transform:rotate(90deg);}
+
+  .mp-nav{flex:1;overflow-y:auto;padding:6px 26px 20px;display:flex;flex-direction:column;}
+  .m-item{border-bottom:1px solid rgba(255,255,255,0.1);}
+  .m-item>button, .m-item>a{
+    width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;
+    background:none;border:none;padding:17px 2px;
+    font-family:'Fraunces',serif;font-size:1.3rem;font-weight:500;color:#fff;text-align:left;
+  }
+  .m-item>a.active{color:#E9B27E;}
+  .m-item svg.chev{color:rgba(255,255,255,0.55);transition:transform .25s ease;flex-shrink:0;}
+  .m-item.open svg.chev{transform:rotate(180deg);}
+  .m-item .sub{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1);}
+  .m-item.open .sub{max-height:320px;}
+  .m-item .sub-inner{padding:2px 2px 16px;}
+  .m-item .sub a{
+    display:block;padding:10px 12px;margin:0 -12px;border-radius:var(--radius-s);
+    color:rgba(255,255,255,0.65);font-size:1rem;transition:background .15s ease,color .15s ease;
+  }
+  .m-item .sub a:hover{background:rgba(255,255,255,0.08);color:#fff;}
+
+  .mp-nav .m-item, .mp-footer{
+    opacity:0;transform:translateX(28px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .mobile-panel.show .mp-nav .m-item, .mobile-panel.show .mp-footer{opacity:1;transform:translateX(0);}
+  .mp-nav .m-item:nth-child(1){transition-delay:.08s;}
+  .mp-nav .m-item:nth-child(2){transition-delay:.13s;}
+  .mp-nav .m-item:nth-child(3){transition-delay:.18s;}
+  .mp-nav .m-item:nth-child(4){transition-delay:.23s;}
+  .mp-nav .m-item:nth-child(5){transition-delay:.28s;}
+  .mp-nav .m-item:nth-child(6){transition-delay:.33s;}
+  .mp-nav .m-item:nth-child(7){transition-delay:.38s;}
+  .mobile-panel.show .mp-footer{transition-delay:.44s;}
+
+  .mp-footer{flex-shrink:0;padding:0 26px 28px;}
+  .mobile-cta{display:block;text-align:center;background:var(--ochre);color:#fff;padding:15px;border-radius:999px;font-weight:600;font-size:1.02rem;transition:background .15s ease,transform .15s ease;}
+  .mobile-cta:hover{background:var(--ochre-dark);transform:translateY(-1px);}
+
+  /* ---------- PAGE BANNER (hero ridotta per le pagine interne) ---------- */
+  .page-banner{position:relative;overflow:hidden;background:var(--navy);height:min(46vh,380px);min-height:280px;display:flex;align-items:center;}
+  .page-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
+  .page-banner .slide-scrim{position:absolute;inset:0;background:linear-gradient(100deg, rgba(20,15,10,0.72) 0%, rgba(20,15,10,0.42) 50%, rgba(20,15,10,0.18) 100%);}
+  .page-banner-content{position:relative;z-index:2;max-width:var(--maxw);width:100%;margin:0 auto;padding:0 28px;color:#fff;}
+  .breadcrumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:0.85rem;color:rgba(255,255,255,0.75);margin-bottom:14px;}
+  .breadcrumb a{color:rgba(255,255,255,0.75);}
+  .breadcrumb a:hover{color:#fff;}
+  .breadcrumb .sep{opacity:0.6;}
+  .page-banner h1{font-size:clamp(1.9rem,4.2vw,2.7rem);color:#fff;line-height:1.12;max-width:16ch;}
+  .page-banner .desc{margin-top:14px;font-size:1.02rem;line-height:1.5;max-width:44ch;color:rgba(255,255,255,0.85);}
+
+  /* ---------- SECTION generic ---------- */
+  section{padding:76px 0;}
+  .section-head{margin-bottom:38px;}
+  .section-title{font-size:clamp(1.6rem,3vw,2.1rem);}
+  .section-sub{margin-top:8px;color:var(--ink-soft);font-size:1rem;}
+
+  /* ---------- NEWS GRID (archivio) ---------- */
+  .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+  .novita-card{display:block;height:100%;border-radius:var(--radius-m);overflow:hidden;background:var(--paper);border:1px solid var(--line);transition:transform .18s ease, box-shadow .18s ease;}
+  .novita-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .novita-visual{height:170px;background-repeat:no-repeat;background-position:center;background-size:cover;}
+  .novita-body{padding:18px 20px 22px;}
+  .novita-date{font-size:0.78rem;color:var(--brick);font-weight:600;letter-spacing:0.02em;}
+  .novita-body h3{margin-top:8px;font-size:1.12rem;line-height:1.3;}
+  .novita-body p{margin-top:8px;font-size:0.88rem;color:var(--ink-soft);line-height:1.5;}
+
+  .load-more-wrap{text-align:center;margin-top:40px;}
+  .btn-outline{
+    display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:999px;
+    font-weight:600;font-size:0.94rem;color:var(--brick-dark);border:1.5px solid var(--brick-dark);
+    transition:background .15s ease,color .15s ease;
+  }
+  .btn-outline:hover{background:var(--brick-dark);color:#fff;}
+
+  /* ---------- NEWSLETTER ---------- */
+  .newsletter{background:#EFE7D8;padding:34px 0;}
+  .nl-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-m);padding:26px 30px;}
+  .nl-left{display:flex;align-items:center;gap:16px;}
+  .nl-icon{width:48px;height:48px;border-radius:50%;background:rgba(166,70,43,0.1);display:flex;align-items:center;justify-content:center;color:var(--brick);flex-shrink:0;}
+  .nl-left h3{font-size:1.05rem;}
+  .nl-left p{font-size:0.86rem;color:var(--ink-soft);margin-top:3px;}
+  .nl-form{display:flex;gap:10px;flex-wrap:wrap;}
+  .nl-form input{padding:12px 16px;border-radius:999px;border:1px solid var(--line);font-size:0.92rem;min-width:220px;font-family:inherit;background:#fff;}
+  .nl-form input:focus{outline:2px solid var(--ochre);border-color:transparent;}
+  .nl-form button{background:var(--ochre);color:#fff;border:none;padding:12px 22px;border-radius:999px;font-weight:600;font-size:0.92rem;transition:background .15s ease;}
+  .nl-form button:hover{background:var(--ochre-dark);}
+  .nl-social{display:flex;align-items:center;gap:10px;}
+  .nl-social span{font-size:0.82rem;color:var(--ink-soft);margin-right:4px;}
+  .soc-btn{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;transition:background .15s ease;}
+  .soc-btn:hover{background:var(--brick);}
+  .nl-msg{font-size:0.85rem;color:var(--sage);font-weight:600;margin-top:8px;display:none;}
+  .nl-msg.show{display:block;}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--navy);color:rgba(255,255,255,0.82);padding:60px 0 0;}
+  .foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr 1fr;gap:30px;padding-bottom:44px;border-bottom:1px solid rgba(255,255,255,0.12);}
+  .foot-brand{display:flex;gap:12px;align-items:flex-start;}
+  .foot-brand-name strong{display:block;color:#fff;font-family:'Fraunces',serif;font-size:1rem;}
+  .foot-brand p{margin-top:12px;font-size:0.86rem;line-height:1.5;color:rgba(255,255,255,0.62);}
+  .foot-link{margin-top:14px;display:inline-block;font-size:0.85rem;color:#E9B27E;font-weight:600;}
+  footer h4{color:#fff;font-family:'Source Sans 3',sans-serif;font-size:0.88rem;letter-spacing:0.02em;margin-bottom:16px;font-weight:600;}
+  footer ul{list-style:none;margin:0;padding:0;}
+  footer li{margin-bottom:10px;font-size:0.86rem;}
+  footer li a{color:rgba(255,255,255,0.68);transition:color .15s ease;}
+  footer li a:hover{color:#fff;}
+  .foot-contact-item{display:flex;gap:8px;font-size:0.86rem;color:rgba(255,255,255,0.68);margin-bottom:12px;line-height:1.4;}
+  .foot-contact-item svg{flex-shrink:0;margin-top:2px;color:#E9B27E;}
+  .foot-dona-btn{margin-top:6px;display:inline-block;background:var(--ochre);color:#fff;padding:9px 18px;border-radius:999px;font-size:0.84rem;font-weight:600;}
+  .foot-bottom{max-width:var(--maxw);margin:0 auto;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;color:rgba(255,255,255,0.5);flex-wrap:wrap;gap:10px;}
+  .foot-bottom a{color:rgba(255,255,255,0.7);}
+  .to-top{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.7);}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:980px){
+    nav.primary, .cta-donate{display:none;}
+    .hamburger{display:flex;}
+    .news-grid{grid-template-columns:1fr 1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    .foot-brand{grid-column:1/-1;}
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 18px;}
+    .header-inner{padding:12px 18px;}
+    section{padding:52px 0;}
+    .section-head .section-title,.section-sub{text-align:center;}
+    .news-grid{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr;gap:34px;}
+    .nl-inner{flex-direction:column;align-items:stretch;}
+    .nl-form{width:100%;}
+    .nl-form input{flex:1;min-width:0;}
+    .foot-bottom{flex-direction:column;text-align:center;}
+    .page-banner{height:min(52vh,320px);}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site">
+  <div class="header-inner">
+    <a href="index.html#top" class="brand">
+      <svg width="38" height="38" viewBox="0 0 48 48" fill="none">
+        <path d="M24 4L38 14V44H10V14L24 4Z" stroke="#A6462B" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M24 4V44" stroke="#A6462B" stroke-width="1.5"/>
+        <path d="M21 44V30H27V44" stroke="#A6462B" stroke-width="2"/>
+        <path d="M24 8V13M21.5 10.5H26.5" stroke="#A6462B" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="24" cy="21" r="4.5" stroke="#A6462B" stroke-width="1.6"/>
+      </svg>
+      <span class="brand-name"><strong>Parrocchia</strong><span>S. Bartolomeo</span></span>
+    </a>
+
+    <nav class="primary" id="primaryNav">
+      <div class="navitem"><a href="index.html#top">Home</a></div>
+      <div class="navitem" data-menu="parrocchia">
+        <button aria-expanded="false">La Parrocchia <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        <div class="dropdown">
+          <a href="page.html">Chi siamo</a>
+          <a href="index.html#restauro">Storia della chiesa</a>
+          <a href="#">Il parroco</a>
+          <a href="#">Documenti e modulistica</a>
+        </div>
+      </div>
+      <div class="navitem" data-menu="comunita">
+        <button aria-expanded="false">Comunità <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        <div class="dropdown">
+          <a href="index.html#comunitaria">Giovani</a>
+          <a href="index.html#comunitaria">Carità</a>
+          <a href="index.html#comunitaria">Gruppi e associazioni</a>
+          <a href="#">Oratorio Don Bosco</a>
+        </div>
+      </div>
+      <div class="navitem" data-menu="vita">
+        <button aria-expanded="false">Vita Parrocchiale <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        <div class="dropdown">
+          <a href="index.html#orari">Orari delle Messe</a>
+          <a href="index.html#comunitaria">Catechesi</a>
+          <a href="#">Sacramenti</a>
+          <a href="#">Calendario liturgico</a>
+        </div>
+      </div>
+      <div class="navitem" data-menu="servizi">
+        <button aria-expanded="false">Servizi <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        <div class="dropdown">
+          <a href="#">Segreteria parrocchiale</a>
+          <a href="#">Prenotazione sacramenti</a>
+          <a href="#">Uso sale parrocchiali</a>
+        </div>
+      </div>
+      <div class="navitem"><a href="sub.html" class="active">News ed Eventi</a></div>
+      <div class="navitem"><a href="index.html#footer">Contatti</a></div>
+    </nav>
+
+    <a href="#" class="cta-donate">Dona ora</a>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Apri il menu" aria-expanded="false">
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<!-- mobile panel: full-screen, slide da destra -->
+<div class="mobile-panel" id="mobilePanel">
+  <div class="mp-header">
+    <a href="index.html#top" class="brand">
+      <svg width="34" height="34" viewBox="0 0 48 48" fill="none">
+        <path d="M24 4L38 14V44H10V14L24 4Z" stroke="#E9B27E" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M24 4V44" stroke="#E9B27E" stroke-width="1.5"/>
+        <path d="M21 44V30H27V44" stroke="#E9B27E" stroke-width="2"/>
+        <circle cx="24" cy="21" r="4.5" stroke="#E9B27E" stroke-width="1.6"/>
+      </svg>
+      <span class="brand-name"><strong>Parrocchia</strong><span>S. Bartolomeo</span></span>
+    </a>
+    <button class="mp-close" id="mobilePanelClose" aria-label="Chiudi menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2L16 16M16 2L2 16" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <nav class="mp-nav">
+    <div class="m-item"><a href="index.html#top">Home</a></div>
+    <div class="m-item" data-mmenu="parrocchia">
+      <button>La Parrocchia <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <div class="sub"><div class="sub-inner">
+        <a href="page.html">Chi siamo</a>
+        <a href="index.html#restauro">Storia della chiesa</a>
+        <a href="#">Il parroco</a>
+        <a href="#">Documenti e modulistica</a>
+      </div></div>
+    </div>
+    <div class="m-item" data-mmenu="comunita">
+      <button>Comunità <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <div class="sub"><div class="sub-inner">
+        <a href="index.html#comunitaria">Giovani</a>
+        <a href="index.html#comunitaria">Carità</a>
+        <a href="index.html#comunitaria">Gruppi e associazioni</a>
+        <a href="#">Oratorio Don Bosco</a>
+      </div></div>
+    </div>
+    <div class="m-item" data-mmenu="vita">
+      <button>Vita Parrocchiale <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <div class="sub"><div class="sub-inner">
+        <a href="index.html#orari">Orari delle Messe</a>
+        <a href="index.html#comunitaria">Catechesi</a>
+        <a href="#">Sacramenti</a>
+        <a href="#">Calendario liturgico</a>
+      </div></div>
+    </div>
+    <div class="m-item" data-mmenu="servizi">
+      <button>Servizi <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <div class="sub"><div class="sub-inner">
+        <a href="#">Segreteria parrocchiale</a>
+        <a href="#">Prenotazione sacramenti</a>
+        <a href="#">Uso sale parrocchiali</a>
+      </div></div>
+    </div>
+    <div class="m-item"><a href="sub.html" class="active">News ed Eventi</a></div>
+    <div class="m-item"><a href="index.html#footer">Contatti</a></div>
+  </nav>
+
+  <div class="mp-footer">
+    <a href="#" class="mobile-cta">Dona ora</a>
+  </div>
+</div>
+
+<!-- ============ PAGE BANNER ============ -->
+<div id="top" class="page-banner">
+  <img src="assets/img/chiesa_conventino.jpg" alt="Parrocchia S. Bartolomeo a Formigine">
+  <div class="slide-scrim"></div>
+  <div class="page-banner-content">
+    <nav class="breadcrumb" aria-label="Sei qui">
+      <a href="index.html#top">Home</a><span class="sep">/</span><span aria-current="page">News ed Eventi</span>
+    </nav>
+    <h1>News ed Eventi</h1>
+    <p class="desc">Le ultime notizie dalla nostra comunità: catechesi, incontri, appuntamenti e vita parrocchiale.</p>
+  </div>
+</div>
+
+<!-- ============ ARCHIVIO NEWS ============ -->
+<section id="archivio-news">
+  <div class="wrap">
+    <div class="section-head" style="text-align:center;">
+      <h2 class="section-title">Tutte le notizie</h2>
+      <p class="section-sub">Scegli un articolo per leggerlo per intero.</p>
+    </div>
+
+    <div class="news-grid">
+      <a href="post.html?id=1" class="novita-card">
+        <div class="novita-visual" style="background-image:url(assets/img/fot_news04.jpg);"></div>
+        <div class="novita-body">
+          <div class="novita-date">15 Mag 2026</div>
+          <h3>Quattro cose che il Signore chiede a noi</h3>
+          <p>La "santità" nella vita cristiana spiegata con tante storie.</p>
+        </div>
+      </a>
+      <a href="post.html?id=2" class="novita-card">
+        <div class="novita-visual" style="background-image:url(assets/img/fot_news03.jpg);"></div>
+        <div class="novita-body">
+          <div class="novita-date">12 Mag 2026</div>
+          <h3>Il posto della preghiera nella nostra giornata</h3>
+          <p>Il respiro dell'anima: preghiere brevi e sincere.</p>
+        </div>
+      </a>
+      <a href="post.html?id=3" class="novita-card">
+        <div class="novita-visual" style="background-image:url(assets/img/fot_news02.jpg);"></div>
+        <div class="novita-body">
+          <div class="novita-date">8 Mag 2026</div>
+          <h3>Iniziazione cristiana: qual è il primo passo?</h3>
+          <p>Un cammino che inizia dall'ascolto e cambia la vita.</p>
+        </div>
+      </a>
+      <a href="post.html?id=4" class="novita-card">
+        <div class="novita-visual" style="background-image:url(assets/img/fot_news01.jpg);"></div>
+        <div class="novita-body">
+          <div class="novita-date">1 Mag 2026</div>
+          <h3>Una domenica di festa in oratorio</h3>
+          <p>Giochi, canti e merenda per tutte le famiglie della comunità.</p>
+        </div>
+      </a>
+      <a href="post.html?id=5" class="novita-card">
+        <div class="novita-visual" style="background-image:url(assets/img/fot_news02.jpg);"></div>
+        <div class="novita-body">
+          <div class="novita-date">24 Apr 2026</div>
+          <h3>Il gruppo Caritas cerca nuovi volontari</h3>
+          <p>Un pomeriggio a settimana per fare la differenza nella vita di chi ha bisogno.</p>
+        </div>
+      </a>
+      <a href="post.html?id=6" class="novita-card">
+        <div class="novita-visual" style="background-image:url(assets/img/fot_news03.jpg);"></div>
+        <div class="novita-body">
+          <div class="novita-date">18 Apr 2026</div>
+          <h3>Al via il nuovo anno di catechesi per i più piccoli</h3>
+          <p>Iscrizioni aperte per i bambini che iniziano il cammino verso i sacramenti.</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="load-more-wrap">
+      <button type="button" class="btn-outline">Carica altre notizie</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NEWSLETTER ============ -->
+<section class="newsletter">
+  <div class="wrap">
+    <div class="nl-inner">
+      <div class="nl-left">
+        <div class="nl-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 6L12 13L21 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <h3>Resta aggiornato</h3>
+          <p>Iscriviti alla nostra newsletter per ricevere notizie, eventi e appuntamenti.</p>
+        </div>
+      </div>
+      <div>
+        <form class="nl-form" id="nlForm">
+          <input type="email" placeholder="La tua email" required aria-label="La tua email">
+          <button type="submit">Iscriviti</button>
+        </form>
+        <p class="nl-msg" id="nlMsg">Grazie! Controlla la tua casella email per confermare.</p>
+      </div>
+      <div class="nl-social">
+        <span>Seguici anche su</span>
+        <a href="#" class="soc-btn" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 8.5H17V5.2C16.6 5.15 15.5 5 14.2 5C11.4 5 9.6 6.7 9.6 9.8V12.5H6.6V16.2H9.6V23H13.4V16.2H16.3L16.8 12.5H13.4V10.2C13.4 9.2 13.7 8.5 15 8.5Z" fill="currentColor"/></svg></a>
+        <a href="#" class="soc-btn" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg></a>
+        <a href="#" class="soc-btn" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="5.5" width="20" height="13" rx="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M10 9.5L15 12L10 14.5V9.5Z" fill="currentColor"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer id="footer">
+  <div class="wrap foot-grid">
+    <div class="foot-brand">
+      <svg width="34" height="34" viewBox="0 0 48 48" fill="none" style="flex-shrink:0;">
+        <path d="M24 4L38 14V44H10V14L24 4Z" stroke="#E9B27E" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M21 44V30H27V44" stroke="#E9B27E" stroke-width="2"/>
+        <circle cx="24" cy="21" r="4.5" stroke="#E9B27E" stroke-width="1.6"/>
+      </svg>
+      <div class="foot-brand-name">
+        <strong>Parrocchia S. Bartolomeo</strong>
+        <p>Una comunità che accoglie, ascolta e cammina insieme alla luce del Vangelo.</p>
+        <a href="index.html#comunitaria" class="foot-link">Scopri di più sulla parrocchia →</a>
+      </div>
+    </div>
+    <div>
+      <h4>Link utili</h4>
+      <ul>
+        <li><a href="page.html">La Parrocchia</a></li>
+        <li><a href="#">Documenti e modulistica</a></li>
+        <li><a href="#">Calendario liturgico</a></li>
+        <li><a href="#">Trasparenza</a></li>
+        <li><a href="#">Privacy e Cookie</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contatti</h4>
+      <div class="foot-contact-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 21S5 14.5 5 9.8C5 6.6 7.5 4 12 4C16.5 4 19 6.6 19 9.8C19 14.5 12 21 12 21Z" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Piazza della Chiesa, 1<br>41043 Formigine (MO)</span>
+      </div>
+      <div class="foot-contact-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5H8L10 10L7.5 11.5C8.5 14 10 15.5 12.5 16.5L14 14L19 16V20C19 20.5 18.5 21 18 21C10.3 21 4 14.7 4 6C4 5.5 4 5 4 5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span>059 558059</span>
+      </div>
+      <div class="foot-contact-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 6L12 13L21 6" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>segreteria@parrocchiaformigine.it</span>
+      </div>
+      <div class="foot-contact-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7V12L15 14" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Orari segreteria:<br>Lun – Sab: 08:30 – 12:00<br>Mar – Gio: 16:00 – 18:00</span>
+      </div>
+    </div>
+
+    <div>
+      <h4>Dona e sostieni</h4>
+      <p style="font-size:0.86rem;color:rgba(255,255,255,0.68);line-height:1.5;">Il tuo sostegno ci aiuta a portare avanti le attività della nostra comunità.</p>
+      <a href="#" class="foot-dona-btn">Dona ora</a>
+    </div>
+
+    <div>
+      <h4>Oratorio Don Bosco</h4>
+      <div class="foot-contact-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 21S5 14.5 5 9.8C5 6.6 7.5 4 12 4C16.5 4 19 6.6 19 9.8C19 14.5 12 21 12 21Z" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Via Pascoli, 7 – Formigine</span>
+      </div>
+      <div class="foot-contact-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 6L12 13L21 6" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>oratorio@parrocchiaformigine.it</span>
+      </div>
+      <a href="#" class="foot-link">Scopri le attività →</a>
+    </div>
+  </div>
+
+  <div class="foot-bottom">
+    <span>© 2026 Parrocchia di Formigine – Tutti i diritti riservati</span>
+    <a href="#top" class="to-top">Torna in alto
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 11V3M7 3L3 7M7 3L11 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ---------- HEADER: sfondo pieno solo dopo un po' di scroll ---------- */
+  const siteHeader = document.querySelector('header.site');
+  function syncHeaderScrolled(){
+    siteHeader.classList.toggle('scrolled', window.scrollY > 40);
+  }
+  syncHeaderScrolled();
+  window.addEventListener('scroll', syncHeaderScrolled, { passive: true });
+
+  /* ---------- DESKTOP DROPDOWNS ---------- */
+  const navItems = document.querySelectorAll('#primaryNav .navitem[data-menu]');
+  function closeAllDesktop(except){
+    navItems.forEach(it=>{
+      if(it!==except){ it.classList.remove('open'); it.querySelector('button')?.setAttribute('aria-expanded','false'); }
+    });
+  }
+  navItems.forEach(item=>{
+    const btn = item.querySelector('button');
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const isOpen = item.classList.contains('open');
+      closeAllDesktop(item);
+      item.classList.toggle('open', !isOpen);
+      btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+  document.addEventListener('click', ()=> closeAllDesktop(null));
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAllDesktop(null); });
+
+  /* ---------- MOBILE MENU (pannello full-screen, slide da destra) ---------- */
+  const hamburger = document.getElementById('hamburgerBtn');
+  const mobilePanel = document.getElementById('mobilePanel');
+  const mobilePanelClose = document.getElementById('mobilePanelClose');
+
+  function openMobilePanel(){
+    mobilePanel.classList.add('show');
+    hamburger.classList.add('active');
+    hamburger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMobilePanel(){
+    mobilePanel.classList.remove('show');
+    hamburger.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', ()=>{
+    mobilePanel.classList.contains('show') ? closeMobilePanel() : openMobilePanel();
+  });
+  mobilePanelClose.addEventListener('click', closeMobilePanel);
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape' && mobilePanel.classList.contains('show')) closeMobilePanel();
+  });
+
+  document.querySelectorAll('.m-item[data-mmenu]').forEach(item=>{
+    item.querySelector('button').addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.m-item[data-mmenu]').forEach(i=>i.classList.remove('open'));
+      item.classList.toggle('open', !isOpen);
+    });
+  });
+  mobilePanel.querySelectorAll('.mp-nav a, .mp-footer a').forEach(a=>{
+    a.addEventListener('click', closeMobilePanel);
+  });
+  window.addEventListener('resize', ()=>{
+    if(window.innerWidth > 980) closeMobilePanel();
+  });
+
+  /* ---------- NEWSLETTER FORM ---------- */
+  const nlForm = document.getElementById('nlForm');
+  const nlMsg = document.getElementById('nlMsg');
+  nlForm.addEventListener('submit', e=>{
+    e.preventDefault();
+    nlMsg.classList.add('show');
+    nlForm.reset();
+  });
+
+  /* ---------- "CARICA ALTRE NOTIZIE" (demo, senza backend) ---------- */
+  const loadMoreBtn = document.querySelector('.load-more-wrap .btn-outline');
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', () => {
+      loadMoreBtn.textContent = 'Non ci sono altre notizie';
+      loadMoreBtn.disabled = true;
+      loadMoreBtn.style.opacity = '0.6';
+      loadMoreBtn.style.cursor = 'default';
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
